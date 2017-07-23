@@ -1,0 +1,7 @@
+name: CreeperRpgItem
+main: vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem
+author: July_ss
+version: 1.0.0
+depend: [MythicMobs, CreeperRpgSystem, Residence]
+commands:
+  cri:
