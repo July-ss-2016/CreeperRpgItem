@@ -14,4 +14,6 @@ public interface RpgItemImpl {
     String getVersion();
 
     double getAdditionDamage();
+
+    boolean canPlace();
 }

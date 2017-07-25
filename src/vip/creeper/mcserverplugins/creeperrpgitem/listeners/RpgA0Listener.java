@@ -1,7 +1,6 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.listeners;
 
-import com.bekvon.bukkit.residence.api.ResidenceApi;
-import com.bekvon.bukkit.residence.protection.ClaimedResidence;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -14,41 +13,40 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.Settings;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.EntityDamageByPlayerEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
-import vip.creeper.mcserverplugins.creeperrpgsystem.utils.MsgUtil;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.CooldownCounter;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 
 import java.util.HashMap;
 
 /**
  * Created by July_ on 2017/7/21.
+ *  燃烧棒
  */
 public class RpgA0Listener implements Listener {
-    private JavaPlugin plugin;
-    private String itemCode;
-    private Settings settings;
-    private HashMap<Integer, String> fireballs;
-    private HashMap<String, Long> cooldowns;
+    private CreeperRpgItem plugin;
+    private final String ITEM_CODE  = "RPGITEM_A0";
+    private HashMap<Integer, String> fireballs = new HashMap<>();
+    private CooldownCounter fireballSkillCooldownCounter = new CooldownCounter(30);
 
-
-    public RpgA0Listener(CreeperRpgItem plugin, String itemCode) {
+    public RpgA0Listener(final CreeperRpgItem plugin) {
         this.plugin = plugin;
-        this.itemCode = itemCode;
-        this.settings = plugin.getSettings();
-        this.fireballs = new HashMap<>();
-        this.cooldowns = new HashMap<>();
     }
 
-    //事件_交互_发射火球
+    // 右键发射火球
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+    public void onFireballEvent(final PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        Action action = event.getAction();
         String playerName = player.getName();
 
-        if (RpgItemManager.isSameItem(itemCode, player.getItemInHand()) && (event.getAction() == Action.RIGHT_CLICK_AIR )) {
-            long cooldown = (System.currentTimeMillis() - cooldowns.getOrDefault(playerName, 0L)) / 1000; //s
+        if ((action == Action.RIGHT_CLICK_BLOCK || action == Action.RIGHT_CLICK_AIR) && RpgItemManager.isSameRpgItem(this.ITEM_CODE, player.getItemInHand())) {
+            long cooldown = this.fireballSkillCooldownCounter.getWaitSec(playerName);
 
-             if (cooldown < settings.rpgA0Cooldowns) {
-                 MsgUtil.sendMsg(player, "§c你必须再等待 " + (settings.rpgA0Cooldowns - cooldown) + "秒 才能再次使用该技能!");
+             if (cooldown != 0) {
+                 MsgUtil.sendSkillCooldownMsg(player, "火球", cooldown);
                  return;
              }
 
@@ -59,37 +57,42 @@ public class RpgA0Listener implements Listener {
             projectile.setTicksLived(200);
             projectile.setShooter(player);
             projectile.setVelocity(eyeVector);
-            fireballs.put(projectile.getEntityId(), playerName);
-            cooldowns.put(playerName, System.currentTimeMillis());
+
+            this.fireballs.put(projectile.getEntityId(), playerName);
+            this.fireballSkillCooldownCounter.put(playerName);
         }
     }
 
-    //攻击事件
+    // 攻击燃烧
     @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+    public void onBurnningEvent(final EntityDamageByPlayerEvent event) {
+        Player player = event.getPlayer();
+        Entity target = event.getEntity();
 
+        if (RpgItemManager.isSameRpgItem(this.ITEM_CODE, player.getItemInHand())) {
+            target.setFireTicks(80); // 燃烧4s
+        }
+    }
+
+    // 领地保护，释放爆炸粒子
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onFireballEvent(final EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
         Entity target = event.getEntity();
         int damagerId = damager.getEntityId();
+        Location damagerLoc = damager.getLocation();
 
-        if (damager.getType() == EntityType.PLAYER) {
-            Player player = (Player) damager;
-            if (RpgItemManager.isSameItem(itemCode, player.getItemInHand())) {
-                target.setFireTicks(80);
-            }
-        }
+        //领地保护
+        if (damager.getType() == EntityType.FIREBALL && this.fireballs.containsKey(damagerId)) {
+            String shooterPlayerName = this.fireballs.get(damagerId);
 
-
-        //领地防御
-        if (damager.getType() == EntityType.FIREBALL && fireballs.containsKey(damagerId)) {
-            ClaimedResidence res = ResidenceApi.getResidenceManager().getByLoc(target.getLocation());
-            String fireballPlayerName = fireballs.get(damagerId);
-
-            if (res != null && (!res.getPermissions().playerHas(fireballPlayerName, "pvp", false) || !res.getPermissions().playerHas(fireballPlayerName, "AnimalKilling", false))) {
+            if (!Util.isCanAttackResidence(target.getLocation(), shooterPlayerName)) {
                 event.setCancelled(true);
+                return;
             }
+
+            event.setDamage(event.getFinalDamage() * 2); // 2倍上海
+            damagerLoc.getWorld().spigot().playEffect(damagerLoc, Effect.EXPLOSION_LARGE); //释放爆炸粒子
         }
-
     }
-
 }

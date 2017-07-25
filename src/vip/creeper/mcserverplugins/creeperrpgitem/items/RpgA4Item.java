@@ -5,22 +5,20 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.impls.RpgItemImpl;
-import vip.creeper.mcserverplugins.creeperrpgsystem.CreeperRpgSystem;
 
 import java.util.Arrays;
 
 /**
- * Created by July_ on 2017/7/22.
+ * Created by July_ on 2017/7/25.
  */
-public class RpgA0Item implements RpgItemImpl {
+public class RpgA4Item implements RpgItemImpl {
     private ItemStack item;
 
-    public RpgA0Item() {
-        this.item = new ItemStack(Material.STICK);
+    public RpgA4Item() {
+        this.item = new ItemStack(Material.BOW);
         ItemMeta meta = item.getItemMeta();
-        meta.setDisplayName("§b[RI] §d燃烧棒");
-        meta.setLore(Arrays.asList(new String[] {"§7- §f代码 §b> §f" + getItemCode(),"§7- §e火球大法好", "§7- §eShift+右键查看详细信息"}));
-        meta.spigot().setUnbreakable(true);
+        meta.setDisplayName("§b[RI] §d御弓");
+        meta.setLore(Arrays.asList(new String[] {"§7- §f代码 §b> §f" + getItemCode(), "§7- §e飞天大法好","§7- §eShift+右键查看详细信息"}));
         this.item.setItemMeta(meta);
     }
 
@@ -31,7 +29,7 @@ public class RpgA0Item implements RpgItemImpl {
 
     @Override
     public String getItemCode() {
-        return "RPGITEM_A0";
+        return "RPGITEM_A4";
     }
 
     @Override

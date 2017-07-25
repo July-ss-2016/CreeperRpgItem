@@ -5,18 +5,21 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import vip.creeper.mcserverplugins.creeperrpgitem.impls.RpgItemImpl;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 
 /**
  * Created by July_ on 2017/7/23.
  */
-public class BaseListener implements Listener {
+public class ServerListener implements Listener {
 
+    // 提升攻击力
     @EventHandler(ignoreCancelled = true)
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+    public void onIncreaseDamageEvent(final EntityDamageByEntityEvent event) {
         Entity entity = event.getDamager();
 
         if (entity.getType() != EntityType.PLAYER) {
@@ -25,14 +28,29 @@ public class BaseListener implements Listener {
 
         Player player = (Player) entity;
         ItemStack handItem = player.getItemInHand();
-        String itemCode = RpgItemManager.getItemCode(handItem);
+        RpgItemImpl rpgItem = RpgItemManager.normalItemToRpgItem(handItem);
 
-        if (itemCode == null) {
+        if (rpgItem == null) {
             return;
         }
 
-        RpgItemImpl rpgItem = RpgItemManager.getItem(itemCode);
-
         event.setDamage(event.getFinalDamage() + rpgItem.getAdditionDamage());
     }
+
+    // 现禁止不能放置的物品放置
+    @EventHandler
+    public void onAntiCannotPlaceBloackEvent(final BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        RpgItemImpl rpgItem = RpgItemManager.normalItemToRpgItem(event.getItemInHand());
+
+        if (rpgItem == null) {
+            return;
+        }
+
+        if (rpgItem.canPlace() == false) {
+            event.setCancelled(true);
+            MsgUtil.sendMsg(player, "§c该物品不允许被放置!");
+        }
+    }
+
 }

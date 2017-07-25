@@ -11,30 +11,30 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
 import org.bukkit.plugin.java.JavaPlugin;
+import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
 import vip.creeper.mcserverplugins.creeperrpgsystem.events.RpgMobKilledByPlayerEvent;
 
 import java.util.HashMap;
 
 /**
+ * 爆炸弓
  * Created by July_ on 2017/7/22.
  */
 public class RpgA1Listener implements Listener {
-    private String itemCode;
-    private JavaPlugin plugin;
-    private BukkitAPIHelper mythicMobApi = MythicMobs.inst().getAPIHelper();
+    private CreeperRpgItem plugin;
+    private final String ITEM_CODE = "RPGITEM_A1";
     private HashMap<Integer, String> tnts = new HashMap<>();
+    private final BukkitAPIHelper MYTHICMOBS_API = MythicMobs.inst().getAPIHelper();
 
 
-    public RpgA1Listener(JavaPlugin plugin, String itemCode) {
+    public RpgA1Listener(final CreeperRpgItem plugin) {
         this.plugin = plugin;
-        this.itemCode = itemCode;
     }
 
-    //事件_箭击中实体_发射TNT
-    @EventHandler
-    public void onProjectileHitEvent(ProjectileHitEvent event) {
-
+    // 箭击中发射TNT
+    @EventHandler(ignoreCancelled  = true, priority = EventPriority.HIGHEST)
+    public void onArrowHitEvent(final ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();
         Entity shooter = (Entity) projectile.getShooter();
 
@@ -44,38 +44,37 @@ public class RpgA1Listener implements Listener {
 
         Player player = (Player) shooter;
 
-        if (RpgItemManager.isSameItem(itemCode, player.getItemInHand())) {
+        if (RpgItemManager.isSameRpgItem(this.ITEM_CODE, player.getItemInHand())) {
             Location playerLocation = player.getLocation();
             TNTPrimed tnt = projectile.getWorld().spawn(playerLocation.add(0, 1, 0), TNTPrimed.class);
             tnt.setFuseTicks(20);
-            tnt.setVelocity(player.getLocation().getDirection().multiply(2.0D)); //向量
-            tnt.setTicksLived(200); //设置生命周期
-            event.getEntity().remove(); //防止被res等插件禁止而无限触发
-            tnts.put(tnt.getEntityId(), player.getName());
+            tnt.setVelocity(player.getLocation().getDirection().multiply(2.0D)); // 向量
+            tnt.setTicksLived(200); // 设置生命周期为10s
+            event.getEntity().remove(); // 防止被res等插件禁止而无限触发
+            this.tnts.put(tnt.getEntityId(), player.getName());
         }
     }
 
-    //_触发事件_RpgMobKillByPlayerEvent
+    // 爆炸触发计分器
     @EventHandler(ignoreCancelled  = true, priority = EventPriority.HIGHEST)
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        int damagerId = damager.getEntityId();
+    public void onTntDamageEvent(final EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager(); // 实体为TNT
+        int damagerId = damager.getEntityId(); // TNT ID
 
-        if (tnts.containsKey(damagerId)) {
+        if (this.tnts.containsKey(damagerId)) {
             Entity target = event.getEntity();
-
-            if (mythicMobApi.isMythicMob(target)) {
-                MythicMob mob = mythicMobApi.getMythicMobInstance(target).getType();
+            if (this.MYTHICMOBS_API.isMythicMob(target)) {
+                MythicMob mob = this.MYTHICMOBS_API.getMythicMobInstance(target).getType();
 
                 if (mob.getHealth() - event.getFinalDamage() <= 0) {
-                    Player player = Bukkit.getPlayer(tnts.get(damagerId));
+                    Player player = Bukkit.getPlayer(this.tnts.get(damagerId));
 
                     if (player != null) {
-                        Bukkit.getPluginManager().callEvent(new RpgMobKilledByPlayerEvent(Bukkit.getPlayer(tnts.get(damagerId)), mob));
+                        Bukkit.getPluginManager().callEvent(new RpgMobKilledByPlayerEvent(Bukkit.getPlayer(this.tnts.get(damagerId)), mob));
                     }
 
-                    //考虑一个TNT可能会伤害>1个怪的可能
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTask(plugin, () -> tnts.remove(damagerId)), 100L); //因为是hashmap所以必须转换为同步线程删除，5s后删除
+                    // 考虑一个TNT可能会伤害>1个怪的可能
+                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTask(plugin, () -> this.tnts.remove(damagerId)), 100L); // 因为是hashmap所以必须转换为同步线程删除，5s后删除
                 }
             }
         }

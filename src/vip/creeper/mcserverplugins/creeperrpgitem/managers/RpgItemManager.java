@@ -15,26 +15,26 @@ public class RpgItemManager {
     private static HashMap<String, RpgItemImpl> items = new HashMap<String, RpgItemImpl>();
 
 
-    public static void registerItem(RpgItemImpl item) {
+    public static void registerRpgItem(final RpgItemImpl item) {
         items.put(item.getItemCode(), item);
     }
 
-    public static RpgItemImpl getItem(String itemCode) {
+    public static RpgItemImpl getRpgItem(final String itemCode) {
         return items.get(itemCode);
     }
 
-    public static boolean isExistsItem(String itemCode) {
+    public static boolean isExistsRpgItem(final String itemCode) {
         return items.containsKey(itemCode);
     }
 
-    public static boolean isSameItem(final String itemCode, final ItemStack item) {
-        if (!isExistsItem(itemCode) || item == null) {
+    public static boolean isSameRpgItem(final String itemCode, ItemStack comparedItem) {
+        if (!isExistsRpgItem(itemCode) || comparedItem == null) {
             return false;
         }
 
-        ItemStack standardItem = getItem(itemCode).getItemStack();
+        ItemStack standardItem = getRpgItem(itemCode).getItemStack();
         ItemMeta standardMeta = standardItem.getItemMeta();
-        ItemMeta comparedMeta = item.getItemMeta();
+        ItemMeta comparedMeta = comparedItem.getItemMeta();
 
         if (standardMeta == null || standardMeta.getLore() == null || comparedMeta == null || comparedMeta.getLore() == null) {
             return false;
@@ -46,11 +46,12 @@ public class RpgItemManager {
         if (standardLore.size() == 0 || comparedLore.size() == 0) {
             return false;
         }
+
         //只比较物品代码
         return standardMeta.getLore().get(0).equals(comparedMeta.getLore().get(0));
     }
 
-    public static String getItemCode(ItemStack item) {
+    public static String getRpgItemCode(final ItemStack item) {
         if (item == null) {
             return null;
         }
@@ -69,5 +70,9 @@ public class RpgItemManager {
 
         //物品代码
         return lores.get(0).replace("§7- §f代码 §b> §f", "");
+    }
+
+    public static RpgItemImpl normalItemToRpgItem(final ItemStack item) {
+        return getRpgItem(getRpgItemCode(item));
     }
 }
