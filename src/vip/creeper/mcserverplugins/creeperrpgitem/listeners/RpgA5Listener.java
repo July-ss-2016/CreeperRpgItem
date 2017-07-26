@@ -9,7 +9,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
-import vip.creeper.mcserverplugins.creeperrpgitem.utils.CooldownCounter;
+import vip.creeper.mcserverplugins.creeperrpgitem.CooldownCounter;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 
 /**

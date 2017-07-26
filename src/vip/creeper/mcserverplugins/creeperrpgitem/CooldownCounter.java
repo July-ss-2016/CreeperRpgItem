@@ -1,4 +1,4 @@
-package vip.creeper.mcserverplugins.creeperrpgitem.utils;
+package vip.creeper.mcserverplugins.creeperrpgitem;
 
 import java.util.HashMap;
 

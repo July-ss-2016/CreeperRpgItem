@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import vip.creeper.mcserverplugins.creeperrpgitem.impls.RpgItemImpl;
+import vip.creeper.mcserverplugins.creeperrpgitem.interfaces.IRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 
@@ -28,7 +28,7 @@ public class ServerListener implements Listener {
 
         Player player = (Player) entity;
         ItemStack handItem = player.getItemInHand();
-        RpgItemImpl rpgItem = RpgItemManager.normalItemToRpgItem(handItem);
+        IRpgItem rpgItem = RpgItemManager.normalItemToRpgItem(handItem);
 
         if (rpgItem == null) {
             return;
@@ -41,7 +41,7 @@ public class ServerListener implements Listener {
     @EventHandler
     public void onAntiCannotPlaceBloackEvent(final BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        RpgItemImpl rpgItem = RpgItemManager.normalItemToRpgItem(event.getItemInHand());
+        IRpgItem rpgItem = RpgItemManager.normalItemToRpgItem(event.getItemInHand());
 
         if (rpgItem == null) {
             return;

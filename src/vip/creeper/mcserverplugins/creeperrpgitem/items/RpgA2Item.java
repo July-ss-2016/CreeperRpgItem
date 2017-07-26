@@ -3,16 +3,14 @@ package vip.creeper.mcserverplugins.creeperrpgitem.items;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.impls.RpgItemImpl;
+import vip.creeper.mcserverplugins.creeperrpgitem.interfaces.IRpgItem;
 
 import java.util.Arrays;
 
 /**
  * Created by July_ on 2017/7/23.
  */
-public class RpgA2Item implements RpgItemImpl {
+public class RpgA2Item implements IRpgItem {
     private ItemStack item;
 
     public RpgA2Item() {

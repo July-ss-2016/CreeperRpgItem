@@ -2,7 +2,7 @@ package vip.creeper.mcserverplugins.creeperrpgitem.managers;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vip.creeper.mcserverplugins.creeperrpgitem.impls.RpgItemImpl;
+import vip.creeper.mcserverplugins.creeperrpgitem.interfaces.IRpgItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,22 +12,30 @@ import java.util.List;
  */
 public class RpgItemManager {
     // item_code - rpg_item_impl
-    private static HashMap<String, RpgItemImpl> items = new HashMap<String, RpgItemImpl>();
+    private HashMap<String, IRpgItem> items = new HashMap<String, IRpgItem>();
 
 
-    public static void registerRpgItem(final RpgItemImpl item) {
-        items.put(item.getItemCode(), item);
+    public boolean registerRpgItem(final IRpgItem item) {
+        if (!this.items.containsKey(item.getItemCode())) {
+            this.items.put(item.getItemCode(), item);
+            return true;
+        }
+        return false;
     }
 
-    public static RpgItemImpl getRpgItem(final String itemCode) {
-        return items.get(itemCode);
+    public void unregisterAllRpgItems() {
+       this.items.clear();
     }
 
-    public static boolean isExistsRpgItem(final String itemCode) {
-        return items.containsKey(itemCode);
+    public IRpgItem getRpgItem(final String itemCode) {
+        return this.items.get(itemCode);
     }
 
-    public static boolean isSameRpgItem(final String itemCode, ItemStack comparedItem) {
+    public boolean isExistsRpgItem(final String itemCode) {
+        return this.items.containsKey(itemCode);
+    }
+
+    public boolean isSameRpgItem(final String itemCode, ItemStack comparedItem) {
         if (!isExistsRpgItem(itemCode) || comparedItem == null) {
             return false;
         }
@@ -51,7 +59,7 @@ public class RpgItemManager {
         return standardMeta.getLore().get(0).equals(comparedMeta.getLore().get(0));
     }
 
-    public static String getRpgItemCode(final ItemStack item) {
+    public String getRpgItemCode(final ItemStack item) {
         if (item == null) {
             return null;
         }
@@ -72,7 +80,7 @@ public class RpgItemManager {
         return lores.get(0).replace("§7- §f代码 §b> §f", "");
     }
 
-    public static RpgItemImpl normalItemToRpgItem(final ItemStack item) {
+    public IRpgItem normalItemToRpgItem(final ItemStack item) {
         return getRpgItem(getRpgItemCode(item));
     }
 }

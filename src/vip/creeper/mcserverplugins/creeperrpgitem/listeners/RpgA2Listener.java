@@ -16,7 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.EntityDamageByPlayerEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
-import vip.creeper.mcserverplugins.creeperrpgitem.utils.CooldownCounter;
+import vip.creeper.mcserverplugins.creeperrpgitem.CooldownCounter;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 

@@ -2,23 +2,17 @@ package vip.creeper.mcserverplugins.creeperrpgitem.listeners;
 
 import de.slikey.effectlib.effect.WarpEffect;
 import de.slikey.effectlib.util.ParticleEffect;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
-import vip.creeper.mcserverplugins.creeperrpgitem.utils.CooldownCounter;
+import vip.creeper.mcserverplugins.creeperrpgitem.CooldownCounter;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
-import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
-
-import java.util.HashMap;
 
 /**
  * Created by July_ on 2017/7/24.
