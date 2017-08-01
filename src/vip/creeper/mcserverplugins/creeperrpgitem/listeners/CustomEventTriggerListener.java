@@ -6,29 +6,29 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerDamageLivingEntityByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
-import vip.creeper.mcserverplugins.creeperrpgitem.interfaces.IRpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
+import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 
 /**
  * Created by July_ on 2017/7/24.
  */
-public class EventTriggerListener {
+public class CustomEventTriggerListener implements Listener {
     private CreeperRpgItem plugin;
 
-    public EventTriggerListener(CreeperRpgItem plugin) {
+    public CustomEventTriggerListener(final CreeperRpgItem plugin) {
         this.plugin = plugin;
     }
 
     //_触发事件_PlayerInteractByRpgItemEvent
     @EventHandler
-    public void onPlayerInteractEvent(PlayerInteractEvent event) {
+    public void onPlayerInteractEvent(final PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        IRpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(player.getItemInHand());
+        RpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(player.getItemInHand());
 
         if (rpgItem != null) {
             Bukkit.getPluginManager().callEvent(new PlayerInteractByRpgItemEvent(rpgItem, player, event));
@@ -37,7 +37,7 @@ public class EventTriggerListener {
 
     //_触发事件_PlayerDamageLivingEntityByRpgItemEvent
     @EventHandler
-    public void onEntityDamageByEntityEvent(EntityDamageByEntityEvent event) {
+    public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
         Entity target = event.getEntity();
 
@@ -46,7 +46,7 @@ public class EventTriggerListener {
         }
 
         Player playerDamager = (Player) damager;
-        IRpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(playerDamager.getItemInHand());
+        RpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(playerDamager.getItemInHand());
         LivingEntity livingEntity = (LivingEntity) event.getEntity();
 
         if (rpgItem == null) {

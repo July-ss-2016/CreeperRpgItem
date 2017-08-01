@@ -2,20 +2,31 @@ package vip.creeper.mcserverplugins.creeperrpgitem.managers;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import vip.creeper.mcserverplugins.creeperrpgitem.interfaces.IRpgItem;
+import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by July_ on 2017/7/21.
  */
 public class RpgItemManager {
     // item_code - rpg_item_impl
-    private HashMap<String, IRpgItem> items = new HashMap<String, IRpgItem>();
+    private HashMap<String, RpgItem> items = new HashMap<String, RpgItem>();
 
+    public List<RpgItem> getRpgItems() {
+        List<RpgItem> temp = new ArrayList<>();
 
-    public boolean registerRpgItem(final IRpgItem item) {
+        Iterator iter = items.entrySet().iterator();
+
+        while (iter.hasNext()) {
+            Map.Entry<String, RpgItem> entry = (Map.Entry) iter.next();
+            temp.add(entry.getValue());
+        }
+
+        return temp;
+    }
+
+    public boolean registerRpgItem(final RpgItem item) {
         if (!this.items.containsKey(item.getItemCode())) {
             this.items.put(item.getItemCode(), item);
             return true;
@@ -27,7 +38,7 @@ public class RpgItemManager {
        this.items.clear();
     }
 
-    public IRpgItem getRpgItem(final String itemCode) {
+    public RpgItem getRpgItem(final String itemCode) {
         return this.items.get(itemCode);
     }
 
@@ -80,7 +91,7 @@ public class RpgItemManager {
         return lores.get(0).replace("§7- §f代码 §b> §f", "");
     }
 
-    public IRpgItem normalItemToRpgItem(final ItemStack item) {
+    public RpgItem normalItemToRpgItem(final ItemStack item) {
         return getRpgItem(getRpgItemCode(item));
     }
 }

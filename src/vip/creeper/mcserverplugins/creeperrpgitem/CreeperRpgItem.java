@@ -2,14 +2,11 @@ package vip.creeper.mcserverplugins.creeperrpgitem;
 
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import vip.creeper.mcserverplugins.creeperrpgitem.commands.OpCommand;
 import vip.creeper.mcserverplugins.creeperrpgitem.items.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.listeners.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
-import vip.creeper.mcserverplugins.creeperrpgitem.tests.ListenerTest;
 
 /**
  * Created by July_ on 2017/7/21.
@@ -47,47 +44,31 @@ import vip.creeper.mcserverplugins.creeperrpgitem.tests.ListenerTest;
  *                   不见满街漂亮妹，哪个归得程序员？
  */
 public class CreeperRpgItem extends JavaPlugin {
-    private final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();;
-    private Settings settings;
     private EffectManager effectManager;
     private RpgItemManager rpgItemManager;
 
     public void onEnable() {
-        settings = new Settings();
         effectManager = new EffectManager(this);
         rpgItemManager = new RpgItemManager();
 
-        getCommand("cri").setExecutor(new OpCommand());
+        getCommand("cri").setExecutor(new OpCommand(this));
         registerItems();
         registerListeners();
-        registerTestClasses();
     }
 
     private void registerItems() {
-        rpgItemManager.registerRpgItem(new RpgA0Item());
-        rpgItemManager.registerRpgItem(new RpgA1tem());
-        rpgItemManager.registerRpgItem(new RpgA2Item());
-        rpgItemManager.registerRpgItem(new RpgA3Item());
-        rpgItemManager.registerRpgItem(new RpgA4Item());
-        rpgItemManager.registerRpgItem(new RpgA5Item());
+        rpgItemManager.registerRpgItem(new RpgA0Item(this));
+        rpgItemManager.registerRpgItem(new RpgA1tem(this));
+        rpgItemManager.registerRpgItem(new RpgA2Item(this));
+        rpgItemManager.registerRpgItem(new RpgA3Item(this));
+        rpgItemManager.registerRpgItem(new RpgA4Item(this));
+        rpgItemManager.registerRpgItem(new RpgA5Item(this));
     }
 
     private void registerListeners() {
-        PLUGIN_MANAGER.registerEvents(new ServerListener(), this);
-        PLUGIN_MANAGER.registerEvents(new RpgA0Listener(this), this);
-        PLUGIN_MANAGER.registerEvents(new RpgA1Listener(this), this);
-        PLUGIN_MANAGER.registerEvents(new RpgA2Listener(this), this);
-        PLUGIN_MANAGER.registerEvents(new RpgA3Listener(this), this);
-        PLUGIN_MANAGER.registerEvents(new RpgA4Listener(this), this);
-        PLUGIN_MANAGER.registerEvents(new RpgA5Listener(this), this);
-    }
-
-    private void registerTestClasses() {
-        PLUGIN_MANAGER.registerEvents(new ListenerTest(), this);
-    }
-
-    public Settings getSettings() {
-        return this.settings;
+        Bukkit.getPluginManager().registerEvents(new ServerListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new CustomEventTriggerListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new RpgItemListener(this), this);
     }
 
     public EffectManager getEffectManager() {

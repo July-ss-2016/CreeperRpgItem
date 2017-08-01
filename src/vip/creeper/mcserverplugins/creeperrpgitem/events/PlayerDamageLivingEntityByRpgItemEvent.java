@@ -1,27 +1,25 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.events;
 
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import vip.creeper.mcserverplugins.creeperrpgitem.interfaces.IRpgItem;
+import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 
 /**
  * Created by July_ on 2017/7/26.
  */
 public class PlayerDamageLivingEntityByRpgItemEvent extends Event implements Cancellable {
-    private static HandlerList handlerList;
+    private static HandlerList handlerList = new HandlerList();
     private Player player;
     private LivingEntity livingEntity;
-    private IRpgItem rpgItem;
+    private RpgItem rpgItem;
     private EntityDamageByEntityEvent entityDamageByEntityEvent;
     private boolean cancellable;
 
-    public PlayerDamageLivingEntityByRpgItemEvent(Player player, LivingEntity livingEntity, IRpgItem rpgItem, EntityDamageByEntityEvent entityDamageByEntityEvent) {
-        handlerList = new HandlerList();
+    public PlayerDamageLivingEntityByRpgItemEvent(Player player, LivingEntity livingEntity, RpgItem rpgItem, EntityDamageByEntityEvent entityDamageByEntityEvent) {
         this.player = player;
         this.livingEntity = livingEntity;
         this.rpgItem = rpgItem;
@@ -36,7 +34,7 @@ public class PlayerDamageLivingEntityByRpgItemEvent extends Event implements Can
         return this.livingEntity;
     }
 
-    public IRpgItem getRpgItem() {
+    public RpgItem getRpgItem() {
         return this.rpgItem;
     }
 
