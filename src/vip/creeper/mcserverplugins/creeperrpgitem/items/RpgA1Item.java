@@ -1,11 +1,15 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.items;
 
+import de.slikey.effectlib.effect.*;
+import de.slikey.effectlib.util.ParticleEffect;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
 import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -22,25 +26,27 @@ import java.util.HashMap;
 /**
  * Created by July_ on 2017/7/21.
  */
-public class RpgA1tem implements RpgItem {
+public class RpgA1Item implements RpgItem {
     private CreeperRpgItem plugin;
-    private ItemStack itemStack;
+    private ItemStack item;
     private HashMap<Integer, String> tnts = new HashMap<>();
     private final BukkitAPIHelper MYTHICMOBS_API = MythicMobs.inst().getAPIHelper();
 
-    public RpgA1tem(final CreeperRpgItem plugin) {
+    public RpgA1Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
-        this.itemStack = new ItemStack(Material.BOW);
-        ItemMeta meta = itemStack.getItemMeta();
+        this.item = new ItemStack(Material.BOW);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        this.item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+        ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[ORI] §d爆炸弓");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §eShift+右键查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §eShift +右键 查看详细信息"));
         meta.spigot().setUnbreakable(true);
-        this.itemStack.setItemMeta(meta);
+        this.item.setItemMeta(meta);
     }
 
     @Override
     public ItemStack getItemStack() {
-        return itemStack;
+        return item;
     }
 
     @Override
@@ -55,6 +61,11 @@ public class RpgA1tem implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
+        return 10;
+    }
+
+    @Override
+    public double getAdditionProtection() {
         return 0;
     }
 
@@ -70,7 +81,6 @@ public class RpgA1tem implements RpgItem {
         } else if (event instanceof EntityDamageByEntityEvent) {
             onTntDamageEntityEvent((EntityDamageByEntityEvent) event);
         }
-
     }
 
     // 箭击中发射TNT
@@ -86,6 +96,13 @@ public class RpgA1tem implements RpgItem {
         tnt.setTicksLived(200); // 设置生命周期为10s
         projectile.remove(); // 防止被res等插件禁止而无限触发
         this.tnts.put(tnt.getEntityId(), shooter.getName());
+
+        ShieldEffect effect = new ShieldEffect  (plugin.getEffectManager());
+        effect.particle = ParticleEffect.REDSTONE;
+        effect.color = Color.FUCHSIA;
+        effect.duration = 200;
+        effect.setLocation(projectile.getLocation());
+        effect.start();
     }
 
     // 爆炸触发计分器

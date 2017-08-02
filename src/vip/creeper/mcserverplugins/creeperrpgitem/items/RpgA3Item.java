@@ -3,8 +3,10 @@ package vip.creeper.mcserverplugins.creeperrpgitem.items;
 import de.slikey.effectlib.effect.WarpEffect;
 import de.slikey.effectlib.util.ParticleEffect;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.block.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -14,7 +16,10 @@ import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 
+import javax.swing.*;
+import javax.swing.Action;
 import java.util.Arrays;
 
 /**
@@ -23,14 +28,15 @@ import java.util.Arrays;
 public class RpgA3Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private CooldownCounter potionCooldownCounter = new CooldownCounter(60);
+    private CooldownCounter potionCooldownCounter = new CooldownCounter(30);
 
     public RpgA3Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.CLAY_BRICK);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d板砖");
-        meta.setLore(Arrays.asList(new String[] {"§7- §f代码 §b> §f" + getItemCode(), "§7- §e你给我把头伸过来","§7- §eShift+右键查看详细信息"}));
+        meta.setLore(Arrays.asList(new String[] {"§7- §f代码 §b> §f" + getItemCode(), "§7- §e你给我把头伸过来","§7- §eShift + 右键 查看详细信息"}));
         this.item.setItemMeta(meta);
     }
 
@@ -55,6 +61,11 @@ public class RpgA3Item implements RpgItem {
     }
 
     @Override
+    public double getAdditionProtection() {
+        return 0;
+    }
+
+    @Override
     public boolean canPlace() {
         return true;
     }
@@ -70,6 +81,10 @@ public class RpgA3Item implements RpgItem {
         Player player = event.getPlayer();
         String playerName = player.getName();
         long cooldown = this.potionCooldownCounter.getWaitSec(playerName);
+
+        if (!Util.isRightAction(event.getAction())) {
+            return;
+        }
 
         if (cooldown != 0) {
             MsgUtil.sendSkillCooldownMsg(player, "加速,力量", cooldown);

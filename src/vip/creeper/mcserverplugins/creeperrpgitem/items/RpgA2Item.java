@@ -4,6 +4,7 @@ import de.slikey.effectlib.effect.WarpEffect;
 import de.slikey.effectlib.util.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -32,9 +33,10 @@ public class RpgA2Item implements RpgItem {
     public RpgA2Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.BLAZE_ROD);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d法杖");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e上天大法好", "§7- §eShift+右键查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e上天大法好", "§7- §eShift + 右键 查看详细信息"));
         this.item.setItemMeta(meta);
     }
 
@@ -55,7 +57,12 @@ public class RpgA2Item implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
-        return 10;
+        return 12;
+    }
+
+    @Override
+    public double getAdditionProtection() {
+        return 0;
     }
 
     @Override
@@ -78,7 +85,6 @@ public class RpgA2Item implements RpgItem {
         String playerName = player.getName();
         Location playerLoc = player.getLocation();
         LivingEntity target = event.getLivingEntity();
-
         long cooldown = this.throwCooldownCounter.getWaitSec(playerName);
 
         if (cooldown != 0) {
@@ -111,11 +117,9 @@ public class RpgA2Item implements RpgItem {
 
     // 攻击致目标缓慢
     private void onSlowEvent(final LivingEntityDamageByRpgItemEvent event) {
-        Player player = event.getPlayer();
-        ItemStack handItem = player.getItemInHand();
         LivingEntity target = event.getLivingEntity();
 
-        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 2)); // 缓慢 Lv.2 60s
+        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1)); // 缓慢 Lv.2 2s
 
     }
 }

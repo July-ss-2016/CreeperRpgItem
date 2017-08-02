@@ -25,22 +25,22 @@ public class RpgItemListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onLivingEntityDamageByRpgItemEvent(final LivingEntityDamageByRpgItemEvent event) {
-        dealEvent(event.getRpgItem().getItemCode(), event);
+        dealEvent(event.getRpgItem(), event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerInteractByRpgItemEvent(final PlayerInteractByRpgItemEvent event) {
-        dealEvent(event.getRpgItem().getItemCode(), event);
+        dealEvent(event.getRpgItem(), event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onPlayerInteractLivingEntityByRpgItemEvent(final PlayerInteractLivingEntityByRpgItemEvent event) {
-        dealEvent(event.getRpgItem().getItemCode(), event);
+        dealEvent(event.getRpgItem(), event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onProjectileHitByRpgItemEvent(final ProjectileHitByRpgItemEvent event) {
-        dealEvent(event.getRpgItem().getItemCode(), event);
+        dealEvent(event.getRpgItem(), event);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -48,13 +48,7 @@ public class RpgItemListener implements Listener {
         dealEventForAllRpgItems(event);
     }
 
-    private boolean dealEvent(String itemCode, Event event) {
-        RpgItem rpgItem = plugin.getRpgItemManager().getRpgItem(itemCode);
-
-        if (rpgItem == null) {
-            return false;
-        }
-
+    private boolean dealEvent(RpgItem rpgItem, Event event) {
         rpgItem.executeEvent(event);
         return true;
     }

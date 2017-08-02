@@ -1,6 +1,10 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.items;
 
+import de.slikey.effectlib.effect.*;
+import de.slikey.effectlib.util.ParticleEffect;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +16,7 @@ import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 
 import java.util.Arrays;
 
@@ -26,9 +31,10 @@ public class RpgA5Item implements RpgItem {
     public RpgA5Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.BANNER);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d肉盾");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e恢复大法好","§7- §eShift+右键查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e恢复大法好","§7- §eShift + 右键 查看详细信息"));
         this.item.setItemMeta(meta);
     }
 
@@ -49,7 +55,12 @@ public class RpgA5Item implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
-        return 6;
+        return 10;
+    }
+
+    @Override
+    public double getAdditionProtection() {
+        return 0;
     }
 
     @Override
@@ -69,12 +80,21 @@ public class RpgA5Item implements RpgItem {
         String playerName = player.getName();
         long cooldown = healCooldownCounter.getWaitSec(playerName);
 
+        if (!Util.isRightAction(event.getAction())) {
+            return;
+        }
+
         if (cooldown != 0) {
             MsgUtil.sendSkillCooldownMsg(player, "治疗", cooldown);
             return;
         }
 
-        player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 160, 1));
+        LoveEffect   effect = new LoveEffect (plugin.getEffectManager());
+
+        effect.setLocation(player.getLocation());
+        effect.start();
+
+        player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 1)); // lv.1 10s
         MsgUtil.sendMsg(player, "你的生命值已提升~");
 
         healCooldownCounter.put(playerName);

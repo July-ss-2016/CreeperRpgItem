@@ -3,6 +3,7 @@ package vip.creeper.mcserverplugins.creeperrpgitem.items;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
@@ -33,9 +34,10 @@ public class RpgA0Item implements RpgItem {
     public RpgA0Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.STICK);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d燃烧棒");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(),"§7- §e火球大法好", "§7- §eShift+右键查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(),"§7- §e火球大法好", "§7- §eShift + 右键 查看详细信息"));
         meta.spigot().setUnbreakable(true);
         this.item.setItemMeta(meta);
     }
@@ -72,6 +74,11 @@ public class RpgA0Item implements RpgItem {
     }
 
     @Override
+    public double getAdditionProtection() {
+        return 0;
+    }
+
+    @Override
     public boolean canPlace() {
         return true;
     }
@@ -80,10 +87,9 @@ public class RpgA0Item implements RpgItem {
     private void onShootFireballEvent(final PlayerInteractByRpgItemEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
-        Action action = event.getAction();
         long cooldown = this.fireballSkillCooldownCounter.getWaitSec(playerName);
 
-        if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) {
+        if (!Util.isRightAction(event.getAction())) {
             return;
         }
 

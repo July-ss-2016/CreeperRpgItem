@@ -2,11 +2,17 @@ package vip.creeper.mcserverplugins.creeperrpgitem;
 
 import de.slikey.effectlib.EffectManager;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import vip.creeper.mcserverplugins.creeperrpgitem.commands.OpCommand;
 import vip.creeper.mcserverplugins.creeperrpgitem.items.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.listeners.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
+import vip.creeper.mcserverplugins.creeperrpgsystem.utils.Util;
+
+import java.text.SimpleDateFormat;
+import java.util.logging.Logger;
 
 /**
  * Created by July_ on 2017/7/21.
@@ -44,31 +50,48 @@ import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
  *                   不见满街漂亮妹，哪个归得程序员？
  */
 public class CreeperRpgItem extends JavaPlugin {
+    private final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
     private EffectManager effectManager;
     private RpgItemManager rpgItemManager;
+    private static CreeperRpgItem instance;
+    private boolean isFirstLoad;
+
+    public void onLoad() {
+        if (!isFirstLoad) {
+            instance = this;
+            isFirstLoad = true;
+        }
+    }
 
     public void onEnable() {
         effectManager = new EffectManager(this);
         rpgItemManager = new RpgItemManager();
 
+        MsgUtil.info("版本 = " + Bukkit.getPluginManager().getPlugin("CreeperRpgItem").getDescription().getVersion());
+        MsgUtil.info("创建时间 = " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(vip.creeper.mcserverplugins.creeperrpgitem.utils.Util.getPluginCreationDate()));
         getCommand("cri").setExecutor(new OpCommand(this));
+        MsgUtil.info("命令已注册.");
         registerItems();
+        MsgUtil.info("物品已注册.");
         registerListeners();
+        MsgUtil.info("监听器已注册.");
+        MsgUtil.info("插件初始化完毕!");
     }
 
     private void registerItems() {
         rpgItemManager.registerRpgItem(new RpgA0Item(this));
-        rpgItemManager.registerRpgItem(new RpgA1tem(this));
+        rpgItemManager.registerRpgItem(new RpgA1Item(this));
         rpgItemManager.registerRpgItem(new RpgA2Item(this));
         rpgItemManager.registerRpgItem(new RpgA3Item(this));
         rpgItemManager.registerRpgItem(new RpgA4Item(this));
         rpgItemManager.registerRpgItem(new RpgA5Item(this));
+        rpgItemManager.registerRpgItem(new RpgA6Item(this));
     }
 
     private void registerListeners() {
-        Bukkit.getPluginManager().registerEvents(new ServerListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new CustomEventTriggerListener(this), this);
-        Bukkit.getPluginManager().registerEvents(new RpgItemListener(this), this);
+        PLUGIN_MANAGER.registerEvents(new ServerListener(this), this);
+        PLUGIN_MANAGER.registerEvents(new CustomEventTriggerListener(this), this);
+        PLUGIN_MANAGER.registerEvents(new RpgItemListener(this), this);
     }
 
     public EffectManager getEffectManager() {
@@ -77,5 +100,9 @@ public class CreeperRpgItem extends JavaPlugin {
 
     public RpgItemManager getRpgItemManager() {
         return this.rpgItemManager;
+    }
+
+    public static CreeperRpgItem getInstance() {
+        return instance;
     }
 }
