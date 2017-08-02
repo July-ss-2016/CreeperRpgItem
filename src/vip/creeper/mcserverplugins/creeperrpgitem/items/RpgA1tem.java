@@ -9,11 +9,11 @@ import org.bukkit.Material;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.ProjectileHitByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgsystem.events.RpgMobKilledByPlayerEvent;
 
 import java.util.Arrays;
@@ -65,8 +65,8 @@ public class RpgA1tem implements RpgItem {
 
     @Override
     public void executeEvent(final Event event) {
-        if (event instanceof ProjectileHitEvent) {
-            onArrowHitEvent((ProjectileHitEvent) event);
+        if (event instanceof ProjectileHitByRpgItemEvent) {
+            onArrowHitEvent((ProjectileHitByRpgItemEvent) event);
         } else if (event instanceof EntityDamageByEntityEvent) {
             onTntDamageEntityEvent((EntityDamageByEntityEvent) event);
         }
@@ -74,23 +74,18 @@ public class RpgA1tem implements RpgItem {
     }
 
     // 箭击中发射TNT
-    private void onArrowHitEvent(final ProjectileHitEvent event) {
-        Projectile projectile = event.getEntity();
-        Entity shooter = (Entity) projectile.getShooter();
+    private void onArrowHitEvent(final ProjectileHitByRpgItemEvent event) {
+        Projectile projectile = event.getProjectile();
+        Player shooter = event.getShooter();
 
-        if (shooter == null || shooter.getType() != EntityType.PLAYER) {
-            return;
-        }
-
-        Player player = (Player) shooter;
-        Location playerLocation = player.getLocation();
+        Location playerLocation = shooter.getLocation();
         TNTPrimed tnt = projectile.getWorld().spawn(playerLocation.add(0, 1, 0), TNTPrimed.class);
 
         tnt.setFuseTicks(20);
-        tnt.setVelocity(player.getLocation().getDirection().multiply(2.0D)); // 向量
+        tnt.setVelocity(shooter.getLocation().getDirection().multiply(2.0D)); // 向量
         tnt.setTicksLived(200); // 设置生命周期为10s
-        event.getEntity().remove(); // 防止被res等插件禁止而无限触发
-        this.tnts.put(tnt.getEntityId(), player.getName());
+        projectile.remove(); // 防止被res等插件禁止而无限触发
+        this.tnts.put(tnt.getEntityId(), shooter.getName());
     }
 
     // 爆炸触发计分器

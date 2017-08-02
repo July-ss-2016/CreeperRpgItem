@@ -1,18 +1,18 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.listeners;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.projectiles.ProjectileSource;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerDamageLivingEntityByRpgItemEvent;
-import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
+import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
 
 /**
  * Created by July_ on 2017/7/24.
@@ -24,38 +24,58 @@ public class CustomEventTriggerListener implements Listener {
         this.plugin = plugin;
     }
 
-    //_触发事件_PlayerInteractByRpgItemEvent
+    // 生命体被玩家使用RPG道具击中事件
     @EventHandler
-    public void onPlayerInteractEvent(final PlayerInteractEvent event) {
+    public void callLivingEntityDamageByRpgItemEvent(final EntityDamageByEntityEvent event) {
+        Entity target = event.getEntity();
+        Entity damager = event.getDamager();
+
+        if (target instanceof LivingEntity && damager.getType() == EntityType.PLAYER) {
+            Player player = (Player) damager;
+            RpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(player.getItemInHand());
+
+            if (rpgItem != null) {
+                Bukkit.getPluginManager().callEvent(new LivingEntityDamageByRpgItemEvent(player, (LivingEntity) target, rpgItem, event));
+            }
+        }
+    }
+
+    // 玩家使用RPG道具交互事件
+    @EventHandler
+    public void callPlayerInteractByRpgItemEvent(final PlayerInteractEvent event) {
         Player player = event.getPlayer();
         RpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(player.getItemInHand());
 
         if (rpgItem != null) {
-            Bukkit.getPluginManager().callEvent(new PlayerInteractByRpgItemEvent(rpgItem, player, event));
+            Bukkit.getPluginManager().callEvent(new PlayerInteractByRpgItemEvent(player, rpgItem, event));
         }
     }
 
-    //_触发事件_PlayerDamageLivingEntityByRpgItemEvent
+    // 玩家使用RPG道具交互实体事件
     @EventHandler
-    public void onEntityDamageByEntityEvent(final EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        Entity target = event.getEntity();
+    public void callPlayerInteractLivingEntityByRpgItemEvent(final PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        RpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(player.getItemInHand());
+        Entity entity = event.getRightClicked();
 
-        if (damager.getType() != EntityType.PLAYER || !(target instanceof LivingEntity)) {
-            return;
+        if (entity instanceof LivingEntity && rpgItem != null) {
+            Bukkit.getPluginManager().callEvent(new PlayerInteractLivingEntityByRpgItemEvent(player, (LivingEntity) entity, rpgItem, event));
         }
+    }
 
-        Player playerDamager = (Player) damager;
-        RpgItem rpgItem = this.plugin.getRpgItemManager().normalItemToRpgItem(playerDamager.getItemInHand());
-        LivingEntity livingEntity = (LivingEntity) event.getEntity();
+    // 玩家使用RPG道具射出抛射物事件
+    @EventHandler
+    public void callProjectileHitByRpgItemEvent(final ProjectileHitEvent event) {
+        Projectile projectile = event.getEntity();
+        ProjectileSource shooter = event.getEntity().getShooter();
 
-        if (rpgItem == null) {
-            return;
+        if (shooter instanceof Player) {
+            Player player = (Player) shooter;
+            RpgItem rpgItem = plugin.getRpgItemManager().normalItemToRpgItem(player.getItemInHand());
+
+            if (rpgItem != null) {
+                Bukkit.getPluginManager().callEvent(new ProjectileHitByRpgItemEvent(player, projectile, rpgItem, event));
+            }
         }
-
-        Bukkit.getPluginManager().callEvent(new PlayerDamageLivingEntityByRpgItemEvent(playerDamager, livingEntity, rpgItem, event));
-
-
-
     }
 }

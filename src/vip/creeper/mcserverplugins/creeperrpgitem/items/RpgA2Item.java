@@ -4,11 +4,9 @@ import de.slikey.effectlib.effect.WarpEffect;
 import de.slikey.effectlib.util.ParticleEffect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -16,8 +14,8 @@ import org.bukkit.potion.PotionEffectType;
 import vip.creeper.mcserverplugins.creeperrpgitem.CooldownCounter;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.events.EntityDamageByPlayerEvent;
-import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.LivingEntityDamageByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractLivingEntityByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 
@@ -67,23 +65,19 @@ public class RpgA2Item implements RpgItem {
 
     @Override
     public void executeEvent(final Event event) {
-        if (event instanceof PlayerInteractEntityEvent) {
-            onFlyEvent((PlayerInteractEntityEvent) event);
-        } else if (event instanceof EntityDamageByPlayerEvent) {
-            onSlowEvent((EntityDamageByPlayerEvent) event);
+        if (event instanceof PlayerInteractLivingEntityByRpgItemEvent) {
+            onFlyEvent((PlayerInteractLivingEntityByRpgItemEvent) event);
+        } else if (event instanceof LivingEntityDamageByRpgItemEvent) {
+            onSlowEvent((LivingEntityDamageByRpgItemEvent) event);
         }
     }
 
     // 飞天技能
-    private void onFlyEvent(final PlayerInteractEntityEvent event) {
+    private void onFlyEvent(final PlayerInteractLivingEntityByRpgItemEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
         Location playerLoc = player.getLocation();
-        Entity target = event.getRightClicked();
-
-        if (!(target instanceof LivingEntity)) {
-            return;
-        }
+        LivingEntity target = event.getLivingEntity();
 
         long cooldown = this.throwCooldownCounter.getWaitSec(playerName);
 
@@ -116,18 +110,12 @@ public class RpgA2Item implements RpgItem {
     }
 
     // 攻击致目标缓慢
-    private void onSlowEvent(final EntityDamageByPlayerEvent event) {
+    private void onSlowEvent(final LivingEntityDamageByRpgItemEvent event) {
         Player player = event.getPlayer();
         ItemStack handItem = player.getItemInHand();
-        Entity entity = event.getEntity();
+        LivingEntity target = event.getLivingEntity();
 
-        if (!(entity instanceof LivingEntity)) {
-            return;
-        }
-
-        LivingEntity livingEntity = (LivingEntity) entity;
-
-        livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 2)); // 缓慢 Lv.2 60s
+        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 60, 2)); // 缓慢 Lv.2 60s
 
     }
 }

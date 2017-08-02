@@ -3,10 +3,7 @@ package vip.creeper.mcserverplugins.creeperrpgitem.items;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
+import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -16,7 +13,7 @@ import org.bukkit.util.Vector;
 import vip.creeper.mcserverplugins.creeperrpgitem.CooldownCounter;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.events.EntityDamageByPlayerEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.LivingEntityDamageByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
@@ -47,8 +44,8 @@ public class RpgA0Item implements RpgItem {
     public void executeEvent(final Event event) {
         if (event instanceof PlayerInteractByRpgItemEvent) {
             onShootFireballEvent((PlayerInteractByRpgItemEvent) event);
-        } else if (event instanceof EntityDamageByPlayerEvent) {
-            onBurningEvent((EntityDamageByPlayerEvent) event);
+        } else if (event instanceof LivingEntityDamageByRpgItemEvent) {
+            onBurningEvent((LivingEntityDamageByRpgItemEvent) event);
         } else if (event instanceof EntityDamageByEntityEvent) {
             onFireballHitEvent((EntityDamageByEntityEvent) event);
         }
@@ -108,8 +105,8 @@ public class RpgA0Item implements RpgItem {
     }
 
     // 攻击燃烧
-    private void onBurningEvent(final EntityDamageByPlayerEvent event) {
-        Entity target = event.getEntity();
+    private void onBurningEvent(final LivingEntityDamageByRpgItemEvent event) {
+        LivingEntity target = event.getLivingEntity();
 
         target.setFireTicks(80); // 燃烧4s
     }

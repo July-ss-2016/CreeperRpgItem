@@ -17,19 +17,10 @@ public class PlayerInteractByRpgItemEvent extends Event implements Cancellable {
     private PlayerInteractEvent playerInteractEvent;
     private boolean cancellable;
 
-    public PlayerInteractByRpgItemEvent(RpgItem rpgItem, Player player, PlayerInteractEvent playerInteractEvent) {
+    public PlayerInteractByRpgItemEvent(Player player, RpgItem rpgItem, PlayerInteractEvent playerInteractEvent) {
         this.rpgItem = rpgItem;
         this.player = player;
         this.playerInteractEvent = playerInteractEvent;
-    }
-
-    @Override
-    public HandlerList getHandlers() {
-        return handlerList;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlerList;
     }
 
     public RpgItem getRpgItem() {
@@ -46,6 +37,15 @@ public class PlayerInteractByRpgItemEvent extends Event implements Cancellable {
 
     public PlayerInteractEvent getPlayerInteractEvent() {
         return this.playerInteractEvent;
+    }
+
+    @Override
+    public HandlerList getHandlers() {
+        return handlerList;
+    }
+
+    public static HandlerList getHandlerList() {
+        return handlerList;
     }
 
     @Override
