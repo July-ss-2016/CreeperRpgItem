@@ -36,7 +36,7 @@ public class RpgA4Item implements RpgItem {
         this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d御弓");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e飞天大法好","§7- §eShift + 右键 查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e飞天大法好","§7- §eShift+右键查看详细信息"));
         this.item.setItemMeta(meta);
     }
 
@@ -57,7 +57,7 @@ public class RpgA4Item implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
-        return 12;
+        return 14;
     }
 
     @Override
@@ -95,21 +95,22 @@ public class RpgA4Item implements RpgItem {
         if (!player.isFlying()) {
             player.setAllowFlight(true);
             player.setFlying(true);
-            MsgUtil.sendMsg(player, "你可以上天了~");
+            player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2,120)); // 力量 Lv.2 6s
+            MsgUtil.sendMsg(player, "你可以上天了~试试双击空格飞行吧~");
 
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTask(plugin, () -> {
                 player.setAllowFlight(false);
                 player.setFlying(false);
                 player.setNoDamageTicks(120);
-            }), 200);
+            }), 240);
 
             this.flyCooldownCounter.put(playerName);
 
             WarpEffect effect = new WarpEffect(plugin.getEffectManager());
             effect.particle = ParticleEffect.CLOUD;
             effect.speed = 1.5f;
-            effect.setLocation(player.getLocation());
 
+            effect.setLocation(player.getLocation());
             effect.start();
         }
     }

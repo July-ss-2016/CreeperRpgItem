@@ -17,11 +17,13 @@ import vip.creeper.mcserverplugins.creeperrpgsystem.CreeperRpgSystem;
 import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Created by July_ on 2017/7/21.
  */
 public class Util {
+    private static Random random = new Random();
 
     public static boolean isPlayer(final CommandSender cs) {
         return (cs instanceof Player);
@@ -63,5 +65,9 @@ public class Util {
         }
 
         return item;
+    }
+
+    public static double getRandomValue() {
+        return random.nextDouble();
     }
 }

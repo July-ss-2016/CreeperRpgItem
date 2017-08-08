@@ -1,10 +1,9 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.items;
 
-import de.slikey.effectlib.effect.*;
+import de.slikey.effectlib.effect.ShieldEffect;
 import de.slikey.effectlib.util.ParticleEffect;
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
-import io.lumine.xikage.mythicmobs.mobs.MythicMob;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -13,6 +12,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
@@ -30,7 +31,6 @@ public class RpgA1Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
     private HashMap<Integer, String> tnts = new HashMap<>();
-    private final BukkitAPIHelper MYTHICMOBS_API = MythicMobs.inst().getAPIHelper();
 
     public RpgA1Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
@@ -39,7 +39,7 @@ public class RpgA1Item implements RpgItem {
         this.item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[ORI] §d爆炸弓");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §eShift +右键 查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §eShift+右键查看详细信息"));
         meta.spigot().setUnbreakable(true);
         this.item.setItemMeta(meta);
     }
@@ -61,7 +61,7 @@ public class RpgA1Item implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
-        return 10;
+        return 0;
     }
 
     @Override
@@ -105,28 +105,13 @@ public class RpgA1Item implements RpgItem {
         effect.start();
     }
 
-    // 爆炸触发计分器
+    // 爆炸
     private void onTntDamageEntityEvent(final EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager(); // 实体为TNT
-        int damagerId = damager.getEntityId(); // TNT ID
+        Entity damager = event.getDamager();
+        int damagerId = damager.getEntityId();
 
         if (this.tnts.containsKey(damagerId)) {
-            Entity target = event.getEntity();
-            if (this.MYTHICMOBS_API.isMythicMob(target)) {
-                MythicMob mob = this.MYTHICMOBS_API.getMythicMobInstance(target).getType();
-
-                if (mob.getHealth() - event.getFinalDamage() <= 0) {
-                    Player player = Bukkit.getPlayer(this.tnts.get(damagerId));
-
-                    if (player != null) {
-                        Bukkit.getPluginManager().callEvent(new RpgMobKilledByPlayerEvent(Bukkit.getPlayer(this.tnts.get(damagerId)), mob));
-                    }
-
-                    // 考虑一个TNT可能会伤害>1个怪的可能
-                    Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTask(plugin, () -> this.tnts.remove(damagerId)), 100L); // 因为是hashmap所以必须转换为同步线程删除，5s后删除
-                }
-            }
+            event.setDamage(100);
         }
-
     }
 }

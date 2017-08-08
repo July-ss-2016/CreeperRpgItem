@@ -8,6 +8,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
@@ -28,7 +29,7 @@ import java.util.Arrays;
 public class RpgA2Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private CooldownCounter throwCooldownCounter = new CooldownCounter(30);
+    private CooldownCounter throwCooldownCounter = new CooldownCounter(25);
 
     public RpgA2Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
@@ -36,7 +37,7 @@ public class RpgA2Item implements RpgItem {
         this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d法杖");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e上天大法好", "§7- §eShift + 右键 查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e上天大法好", "§7- §eShift+右键查看详细信息"));
         this.item.setItemMeta(meta);
     }
 
@@ -57,7 +58,7 @@ public class RpgA2Item implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
-        return 12;
+        return 16;
     }
 
     @Override
@@ -97,7 +98,6 @@ public class RpgA2Item implements RpgItem {
             target.teleport(player.getLocation().add(0, 10, 0));
 
             WarpEffect effect = new WarpEffect(plugin.getEffectManager());
-
             effect.speed = 1.5f;
             effect.particle = ParticleEffect.ENCHANTMENT_TABLE;
             effect.setLocation(playerLoc);
@@ -109,6 +109,7 @@ public class RpgA2Item implements RpgItem {
                 MsgUtil.sendSkillDamageMsg(target, playerName, "上天");
             }
 
+            target.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 15));
             this.throwCooldownCounter.put(playerName);
         } else {
             MsgUtil.sendMsg(player, MsgUtil.NO_ATTACK_MSG);

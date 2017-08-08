@@ -1,0 +1,5 @@
+<root>
+    <item name='org.bukkit.entity.Entity void setLastDamageCause(org.bukkit.event.entity.EntityDamageEvent)'>
+        <annotation name='java.lang.Deprecated'/>
+    </item>
+</root>

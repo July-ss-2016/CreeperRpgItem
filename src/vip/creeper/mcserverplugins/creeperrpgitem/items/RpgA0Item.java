@@ -8,6 +8,7 @@ import org.bukkit.entity.*;
 import org.bukkit.event.Event;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -29,7 +30,7 @@ public class RpgA0Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
     private HashMap<Integer, String> fireballs = new HashMap<>();
-    private CooldownCounter fireballSkillCooldownCounter = new CooldownCounter(30);
+    private CooldownCounter fireballSkillCooldownCounter = new CooldownCounter(10);
 
     public RpgA0Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
@@ -37,7 +38,7 @@ public class RpgA0Item implements RpgItem {
         this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d燃烧棒");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(),"§7- §e火球大法好", "§7- §eShift + 右键 查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(),"§7- §e火球大法好", "§7- §eShift+右键查看详细信息"));
         meta.spigot().setUnbreakable(true);
         this.item.setItemMeta(meta);
     }
@@ -70,7 +71,7 @@ public class RpgA0Item implements RpgItem {
 
     @Override
     public double getAdditionDamage() {
-        return 10;
+        return 15;
     }
 
     @Override
@@ -102,8 +103,8 @@ public class RpgA0Item implements RpgItem {
         Vector eyeVector = eyeLocation.getDirection();
         Projectile projectile = (Projectile) player.getWorld().spawnEntity(player.getLocation().add(0, 1, 0), EntityType.FIREBALL); // y+1
 
-        projectile.setTicksLived(200);
-        projectile.setShooter(player);
+        projectile.setTicksLived(200); // 防止长期存在卡服
+        projectile.setShooter(player); // 必须设置这个，不然crs计数器计算不到
         projectile.setVelocity(eyeVector);
 
         this.fireballs.put(projectile.getEntityId(), playerName);
@@ -120,11 +121,10 @@ public class RpgA0Item implements RpgItem {
     // 领地保护，释放爆炸粒子
     private void onFireballHitEvent(final EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
-        Entity target = event.getEntity();
         int damagerId = damager.getEntityId();
+        Entity target = event.getEntity();
         Location damagerLoc = damager.getLocation();
 
-        //领地保护
         if (damager.getType() == EntityType.FIREBALL && this.fireballs.containsKey(damagerId)) {
             String shooterPlayerName = this.fireballs.get(damagerId);
 
@@ -133,7 +133,7 @@ public class RpgA0Item implements RpgItem {
                 return;
             }
 
-            event.setDamage(event.getFinalDamage() * 2); // 2倍伤害
+            event.setDamage(event.getFinalDamage() * 3);
             damagerLoc.getWorld().spigot().playEffect(damagerLoc, Effect.EXPLOSION_LARGE); // 释放爆炸粒子
         }
     }

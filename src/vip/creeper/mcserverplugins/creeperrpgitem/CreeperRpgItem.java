@@ -85,7 +85,6 @@ public class CreeperRpgItem extends JavaPlugin {
         rpgItemManager.registerRpgItem(new RpgA3Item(this));
         rpgItemManager.registerRpgItem(new RpgA4Item(this));
         rpgItemManager.registerRpgItem(new RpgA5Item(this));
-        rpgItemManager.registerRpgItem(new RpgA6Item(this));
     }
 
     private void registerListeners() {

@@ -34,7 +34,7 @@ public class RpgA5Item implements RpgItem {
         this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d肉盾");
-        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e恢复大法好","§7- §eShift + 右键 查看详细信息"));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e恢复大法好","§7- §eShift+右键查看详细信息"));
         this.item.setItemMeta(meta);
     }
 
@@ -89,14 +89,12 @@ public class RpgA5Item implements RpgItem {
             return;
         }
 
-        LoveEffect   effect = new LoveEffect (plugin.getEffectManager());
-
+        LoveEffect effect = new LoveEffect (plugin.getEffectManager());
         effect.setLocation(player.getLocation());
         effect.start();
 
         player.addPotionEffect(new PotionEffect(PotionEffectType.HEALTH_BOOST, 200, 1)); // lv.1 10s
         MsgUtil.sendMsg(player, "你的生命值已提升~");
-
         healCooldownCounter.put(playerName);
     }
 }
