@@ -17,7 +17,7 @@ public class PlayerInteractByRpgItemEvent extends Event implements Cancellable {
     private PlayerInteractEvent playerInteractEvent;
     private boolean cancellable;
 
-    public PlayerInteractByRpgItemEvent(Player player, RpgItem rpgItem, PlayerInteractEvent playerInteractEvent) {
+    public PlayerInteractByRpgItemEvent(final Player player, final RpgItem rpgItem, final PlayerInteractEvent playerInteractEvent) {
         this.rpgItem = rpgItem;
         this.player = player;
         this.playerInteractEvent = playerInteractEvent;
@@ -54,7 +54,7 @@ public class PlayerInteractByRpgItemEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
+    public void setCancelled(final boolean b) {
         this.cancellable = b;
     }
 }

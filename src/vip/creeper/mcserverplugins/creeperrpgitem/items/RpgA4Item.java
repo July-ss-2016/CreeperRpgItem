@@ -28,15 +28,18 @@ import java.util.Arrays;
 public class RpgA4Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private CooldownCounter flyCooldownCounter = new CooldownCounter(30);
+    private CooldownCounter flyCooldownCounter;
 
     public RpgA4Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.BOW);
-        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        this.flyCooldownCounter = new CooldownCounter(25);
+
         ItemMeta meta = item.getItemMeta();
+
         meta.setDisplayName("§b[RI] §d御弓");
         meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e飞天大法好","§7- §eShift+右键查看详细信息"));
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         this.item.setItemMeta(meta);
     }
 
@@ -91,11 +94,11 @@ public class RpgA4Item implements RpgItem {
             return;
         }
 
-        // 排除已经有飞行的玩家
+        //排除已经有飞行的玩家
         if (!player.isFlying()) {
             player.setAllowFlight(true);
             player.setFlying(true);
-            player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2,120)); // 力量 Lv.2 6s
+            player.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE, 2,120)); //力量 Lv.2 6s
             MsgUtil.sendMsg(player, "你可以上天了~试试双击空格飞行吧~");
 
             Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, () -> Bukkit.getScheduler().runTask(plugin, () -> {

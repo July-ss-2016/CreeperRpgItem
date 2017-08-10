@@ -18,7 +18,7 @@ public class PlayerInteractLivingEntityByRpgItemEvent extends org.bukkit.event.E
     private RpgItem rpgItem;
     private PlayerInteractEntityEvent playerInteractEntityEvent;
 
-    public PlayerInteractLivingEntityByRpgItemEvent(Player player, LivingEntity livingEntity, RpgItem rpgItem, PlayerInteractEntityEvent playerInteractEntityEvent) {
+    public PlayerInteractLivingEntityByRpgItemEvent(final Player player, final LivingEntity livingEntity, final RpgItem rpgItem, final PlayerInteractEntityEvent playerInteractEntityEvent) {
         this.player = player;
         this.livingEntity = livingEntity;
         this.rpgItem = rpgItem;
@@ -47,7 +47,7 @@ public class PlayerInteractLivingEntityByRpgItemEvent extends org.bukkit.event.E
     }
 
     @Override
-    public void setCancelled(boolean b) {
+    public void setCancelled(final boolean b) {
         this.cancelled = b;
     }
 

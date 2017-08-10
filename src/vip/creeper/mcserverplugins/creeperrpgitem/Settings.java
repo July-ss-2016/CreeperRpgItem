@@ -7,13 +7,13 @@ import java.util.List;
  * Created by July_ on 2017/7/23.
  */
 public class Settings {
-    public List<String> noSkillWorld;
+    private List<String> noRpgItemWorlds;
 
+    public void setNoRpgItemWorlds(final List<String> worlds) {
+        this.noRpgItemWorlds = worlds;
+    }
 
-    public Settings() {
-        this.noSkillWorld = new ArrayList<String>();
-        this.noSkillWorld.add("w_plot_0");
-        this.noSkillWorld.add("w_res_0");
-        this.noSkillWorld.add("world");
+    public List<String> getNoRpgItemWorlds() {
+        return this.noRpgItemWorlds;
     }
 }

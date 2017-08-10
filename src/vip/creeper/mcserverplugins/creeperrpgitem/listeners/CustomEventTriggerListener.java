@@ -10,9 +10,11 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.projectiles.ProjectileSource;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.events.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.LivingEntityDamageByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractLivingEntityByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.ProjectileHitByRpgItemEvent;
 
 /**
  * Created by July_ on 2017/7/24.
@@ -24,7 +26,7 @@ public class CustomEventTriggerListener implements Listener {
         this.plugin = plugin;
     }
 
-    // 生命体被玩家使用RPG道具击中事件
+    //生命体被玩家使用RPG道具击中事件
     @EventHandler
     public void callLivingEntityDamageByRpgItemEvent(final EntityDamageByEntityEvent event) {
         Entity target = event.getEntity();
@@ -40,7 +42,7 @@ public class CustomEventTriggerListener implements Listener {
         }
     }
 
-    // 玩家使用RPG道具交互事件
+    //玩家使用RPG道具交互事件
     @EventHandler
     public void callPlayerInteractByRpgItemEvent(final PlayerInteractEvent event) {
         Player player = event.getPlayer();
@@ -51,7 +53,7 @@ public class CustomEventTriggerListener implements Listener {
         }
     }
 
-    // 玩家使用RPG道具交互实体事件
+    //玩家使用RPG道具交互实体事件
     @EventHandler
     public void callPlayerInteractLivingEntityByRpgItemEvent(final PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
@@ -63,7 +65,7 @@ public class CustomEventTriggerListener implements Listener {
         }
     }
 
-    // 玩家使用RPG道具射出抛射物事件
+    //玩家使用RPG道具射出抛射物事件
     @EventHandler
     public void callProjectileHitByRpgItemEvent(final ProjectileHitEvent event) {
         Projectile projectile = event.getEntity();

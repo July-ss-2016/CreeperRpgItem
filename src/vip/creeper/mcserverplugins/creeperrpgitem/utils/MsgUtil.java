@@ -1,9 +1,7 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.utils;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 
 import java.util.logging.Logger;
@@ -25,8 +23,9 @@ public class MsgUtil {
         sendMsg(cs, "&c你必须等待 &e" + cooldownSec + "秒 &c才能再次使用 &e" + skillName + " §c技能!");
     }
 
+    @SuppressWarnings("SameParameterValue")
     public static void sendSkillDamageMsg(final CommandSender target, final String damagerName, final String skillName) {
-        sendMsg(target, damagerName + " 对你使用了 &e" + skillName + " &c技能.");
+        sendMsg(target, "&e" + damagerName + " &c对你使用了 &e" + skillName + " &c技能.");
     }
 
     public static void info(final String msg) {

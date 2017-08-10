@@ -29,15 +29,18 @@ import java.util.Arrays;
 public class RpgA2Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private CooldownCounter throwCooldownCounter = new CooldownCounter(25);
+    private CooldownCounter throwCooldownCounter;
 
     public RpgA2Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.BLAZE_ROD);
-        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        this.throwCooldownCounter = new CooldownCounter(25);
+
         ItemMeta meta = item.getItemMeta();
+
         meta.setDisplayName("§b[RI] §d法杖");
         meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e上天大法好", "§7- §eShift+右键查看详细信息"));
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         this.item.setItemMeta(meta);
     }
 
@@ -80,7 +83,7 @@ public class RpgA2Item implements RpgItem {
         }
     }
 
-    // 飞天技能
+    //飞天技能
     private void onFlyEvent(final PlayerInteractLivingEntityByRpgItemEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
@@ -93,7 +96,7 @@ public class RpgA2Item implements RpgItem {
             return;
         }
 
-        // 判断是否在领地
+        //判断是否在领地
         if (Util.isCanAttackResidence(playerLoc, playerName)) {
             target.teleport(player.getLocation().add(0, 10, 0));
 
@@ -116,11 +119,11 @@ public class RpgA2Item implements RpgItem {
         }
     }
 
-    // 攻击致目标缓慢
+    //攻击致目标缓慢
     private void onSlowEvent(final LivingEntityDamageByRpgItemEvent event) {
         LivingEntity target = event.getLivingEntity();
 
-        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1)); // 缓慢 Lv.2 2s
+        target.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, 40, 1)); //缓慢 Lv.2 2s
 
     }
 }

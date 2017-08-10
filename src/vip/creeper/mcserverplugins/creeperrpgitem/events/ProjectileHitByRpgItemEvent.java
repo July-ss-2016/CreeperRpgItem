@@ -19,7 +19,7 @@ public class ProjectileHitByRpgItemEvent extends Event implements Cancellable {
     private RpgItem rpgItem;
     private ProjectileHitEvent projectileHitEvent;
 
-    public ProjectileHitByRpgItemEvent(Player shooter, Projectile projectile, RpgItem rpgItem, ProjectileHitEvent projectileHitEvent) {
+    public ProjectileHitByRpgItemEvent(final Player shooter, final Projectile projectile, final RpgItem rpgItem, final ProjectileHitEvent projectileHitEvent) {
         this.shooter = shooter;
         this.projectile = projectile;
         this.rpgItem = rpgItem;
@@ -48,7 +48,7 @@ public class ProjectileHitByRpgItemEvent extends Event implements Cancellable {
     }
 
     @Override
-    public void setCancelled(boolean b) {
+    public void setCancelled(final boolean b) {
         this.cancelled = b;
     }
 

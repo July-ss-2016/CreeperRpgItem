@@ -30,17 +30,20 @@ import java.util.HashMap;
 public class RpgA1Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private HashMap<Integer, String> tnts = new HashMap<>();
+    private HashMap<Integer, String> tnts;
 
     public RpgA1Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.BOW);
-        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
-        this.item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
+        this.tnts = new HashMap<>();
+
         ItemMeta meta = item.getItemMeta();
+
         meta.setDisplayName("§b[ORI] §d爆炸弓");
         meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §eShift+右键查看详细信息"));
         meta.spigot().setUnbreakable(true);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        this.item.addUnsafeEnchantment(Enchantment.ARROW_INFINITE, 1);
         this.item.setItemMeta(meta);
     }
 
@@ -83,7 +86,7 @@ public class RpgA1Item implements RpgItem {
         }
     }
 
-    // 箭击中发射TNT
+    //箭击中发射TNT
     private void onArrowHitEvent(final ProjectileHitByRpgItemEvent event) {
         Projectile projectile = event.getProjectile();
         Player shooter = event.getShooter();
@@ -92,9 +95,9 @@ public class RpgA1Item implements RpgItem {
         TNTPrimed tnt = projectile.getWorld().spawn(playerLocation.add(0, 1, 0), TNTPrimed.class);
 
         tnt.setFuseTicks(20);
-        tnt.setVelocity(shooter.getLocation().getDirection().multiply(2.0D)); // 向量
-        tnt.setTicksLived(200); // 设置生命周期为10s
-        projectile.remove(); // 防止被res等插件禁止而无限触发
+        tnt.setVelocity(shooter.getLocation().getDirection().multiply(2.0D)); //向量
+        tnt.setTicksLived(200); //设置生命周期为10s
+        projectile.remove(); //防止被res等插件禁止而无限触发
         this.tnts.put(tnt.getEntityId(), shooter.getName());
 
         ShieldEffect effect = new ShieldEffect  (plugin.getEffectManager());
@@ -105,7 +108,7 @@ public class RpgA1Item implements RpgItem {
         effect.start();
     }
 
-    // 爆炸
+    //爆炸
     private void onTntDamageEntityEvent(final EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
         int damagerId = damager.getEntityId();

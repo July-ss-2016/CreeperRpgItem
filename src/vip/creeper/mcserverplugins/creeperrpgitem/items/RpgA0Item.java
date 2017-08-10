@@ -29,17 +29,20 @@ import java.util.HashMap;
 public class RpgA0Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private HashMap<Integer, String> fireballs = new HashMap<>();
-    private CooldownCounter fireballSkillCooldownCounter = new CooldownCounter(10);
+    private HashMap<Integer, String> fireballs;
+    private CooldownCounter fireballSkillCooldownCounter;
 
     public RpgA0Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.STICK);
-        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        this.fireballs = new HashMap<>();
+        this.fireballSkillCooldownCounter = new CooldownCounter(10);
+
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d燃烧棒");
         meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(),"§7- §e火球大法好", "§7- §eShift+右键查看详细信息"));
         meta.spigot().setUnbreakable(true);
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         this.item.setItemMeta(meta);
     }
 
@@ -84,7 +87,7 @@ public class RpgA0Item implements RpgItem {
         return true;
     }
 
-    // 右键发射火球
+    //右键发射火球
     private void onShootFireballEvent(final PlayerInteractByRpgItemEvent event) {
         Player player = event.getPlayer();
         String playerName = player.getName();
@@ -101,24 +104,24 @@ public class RpgA0Item implements RpgItem {
 
         Location eyeLocation = player.getEyeLocation();
         Vector eyeVector = eyeLocation.getDirection();
-        Projectile projectile = (Projectile) player.getWorld().spawnEntity(player.getLocation().add(0, 1, 0), EntityType.FIREBALL); // y+1
+        Projectile projectile = (Projectile) player.getWorld().spawnEntity(player.getLocation().add(0, 1, 0), EntityType.FIREBALL); //y+1
 
-        projectile.setTicksLived(200); // 防止长期存在卡服
-        projectile.setShooter(player); // 必须设置这个，不然crs计数器计算不到
+        projectile.setTicksLived(200); //防止长期存在卡服
+        projectile.setShooter(player); //必须设置这个，不然crs计数器计算不到
         projectile.setVelocity(eyeVector);
 
         this.fireballs.put(projectile.getEntityId(), playerName);
         this.fireballSkillCooldownCounter.put(playerName);
     }
 
-    // 攻击燃烧
+    //攻击燃烧
     private void onBurningEvent(final LivingEntityDamageByRpgItemEvent event) {
         LivingEntity target = event.getLivingEntity();
 
-        target.setFireTicks(80); // 燃烧4s
+        target.setFireTicks(80); //燃烧4s
     }
 
-    // 领地保护，释放爆炸粒子
+    //领地保护，释放爆炸粒子
     private void onFireballHitEvent(final EntityDamageByEntityEvent event) {
         Entity damager = event.getDamager();
         int damagerId = damager.getEntityId();
@@ -134,7 +137,7 @@ public class RpgA0Item implements RpgItem {
             }
 
             event.setDamage(event.getFinalDamage() * 3);
-            damagerLoc.getWorld().spigot().playEffect(damagerLoc, Effect.EXPLOSION_LARGE); // 释放爆炸粒子
+            damagerLoc.getWorld().spigot().playEffect(damagerLoc, Effect.EXPLOSION_LARGE); //释放爆炸粒子
         }
     }
 }

@@ -5,8 +5,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import vip.creeper.mcserverplugins.creeperrpgitem.commands.OpCommand;
+import vip.creeper.mcserverplugins.creeperrpgitem.configs.PluginConfig;
 import vip.creeper.mcserverplugins.creeperrpgitem.items.*;
 import vip.creeper.mcserverplugins.creeperrpgitem.listeners.*;
+import vip.creeper.mcserverplugins.creeperrpgitem.managers.ConfigManager;
 import vip.creeper.mcserverplugins.creeperrpgitem.managers.RpgItemManager;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
 import vip.creeper.mcserverplugins.creeperrpgsystem.utils.Util;
@@ -25,10 +27,10 @@ import java.util.logging.Logger;
  *                            (| -_- |)
  *                            O\  =  /O
  *                         ____/`---'\____
- *                       .'  \\|     |//  `.
- *                      /  \\|||  :  |||//  \
+ *                       .'  \\|     |// `.
+ *                      /  \\|||  :  |||// \
  *                     /  _||||| -:- |||||-  \
- *                     |   | \\\  -  /// |   |
+ *                     |   | \\\  -  ///|   |
  *                     | \_|  ''\---/''  |   |
  *                     \  .-\__  `-`  ___/-. /
  *                   ___`. .'  /--.--\  `. . __
@@ -50,10 +52,12 @@ import java.util.logging.Logger;
  *                   不见满街漂亮妹，哪个归得程序员？
  */
 public class CreeperRpgItem extends JavaPlugin {
+    private static CreeperRpgItem instance;
     private final PluginManager PLUGIN_MANAGER = Bukkit.getPluginManager();
+    private Settings settings;
+    private ConfigManager configManager;
     private EffectManager effectManager;
     private RpgItemManager rpgItemManager;
-    private static CreeperRpgItem instance;
     private boolean isFirstLoad;
 
     public void onLoad() {
@@ -64,11 +68,16 @@ public class CreeperRpgItem extends JavaPlugin {
     }
 
     public void onEnable() {
-        effectManager = new EffectManager(this);
-        rpgItemManager = new RpgItemManager();
+        this.settings = new Settings();
+        this.configManager = new ConfigManager(this);
+        this.effectManager = new EffectManager(this);
+        this.rpgItemManager = new RpgItemManager();
 
+        registerConfigs();
         MsgUtil.info("版本 = " + Bukkit.getPluginManager().getPlugin("CreeperRpgItem").getDescription().getVersion());
         MsgUtil.info("创建时间 = " + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(vip.creeper.mcserverplugins.creeperrpgitem.utils.Util.getPluginCreationDate()));
+        this.configManager.loadAllConfig();
+        MsgUtil.info("配置已载入!");
         getCommand("cri").setExecutor(new OpCommand(this));
         MsgUtil.info("命令已注册.");
         registerItems();
@@ -76,6 +85,10 @@ public class CreeperRpgItem extends JavaPlugin {
         registerListeners();
         MsgUtil.info("监听器已注册.");
         MsgUtil.info("插件初始化完毕!");
+    }
+
+    private void registerConfigs() {
+        configManager.registerConfig(ConfigType.PLUGIN_CONFIG, new PluginConfig(this));
     }
 
     private void registerItems() {
@@ -99,6 +112,14 @@ public class CreeperRpgItem extends JavaPlugin {
 
     public RpgItemManager getRpgItemManager() {
         return this.rpgItemManager;
+    }
+
+    public ConfigManager getConfigManager() {
+        return this.configManager;
+    }
+
+    public Settings getSettings() {
+        return this.settings;
     }
 
     public static CreeperRpgItem getInstance() {

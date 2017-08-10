@@ -2,8 +2,6 @@ package vip.creeper.mcserverplugins.creeperrpgitem.utils;
 
 import com.bekvon.bukkit.residence.api.ResidenceApi;
 import com.bekvon.bukkit.residence.protection.ClaimedResidence;
-import io.lumine.xikage.mythicmobs.MythicMobs;
-import io.lumine.xikage.mythicmobs.api.bukkit.BukkitAPIHelper;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -11,12 +9,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
-import vip.creeper.mcserverplugins.creeperrpgitem.Settings;
-import vip.creeper.mcserverplugins.creeperrpgsystem.CreeperRpgSystem;
 
 import java.io.File;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Random;
 
 /**

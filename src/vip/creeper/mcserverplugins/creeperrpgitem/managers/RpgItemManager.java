@@ -10,8 +10,12 @@ import java.util.*;
  * Created by July_ on 2017/7/21.
  */
 public class RpgItemManager {
-    // item_code - rpg_item_impl
-    private HashMap<String, RpgItem> items = new HashMap<String, RpgItem>();
+    //item_code - rpg_item_impl
+    private HashMap<String, RpgItem> items;
+
+    public RpgItemManager() {
+        this.items = new HashMap<>();
+    }
 
     public List<RpgItem> getRpgItems() {
         List<RpgItem> temp = new ArrayList<>();

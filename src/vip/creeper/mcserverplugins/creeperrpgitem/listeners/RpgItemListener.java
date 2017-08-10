@@ -5,7 +5,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.LivingEntityDamageByRpgItemEvent;
@@ -48,9 +47,8 @@ public class RpgItemListener implements Listener {
         dealEventForAllRpgItems(event);
     }
 
-    private boolean dealEvent(RpgItem rpgItem, Event event) {
+    private void dealEvent(RpgItem rpgItem, Event event) {
         rpgItem.executeEvent(event);
-        return true;
     }
 
     private void dealEventForAllRpgItems(Event event) {

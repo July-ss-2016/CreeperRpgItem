@@ -20,7 +20,7 @@ public class LivingEntityDamageByRpgItemEvent extends Event implements Cancellab
     private RpgItem rpgItem;
     private EntityDamageByEntityEvent entityDamageByEntityEvent;
 
-    public LivingEntityDamageByRpgItemEvent(Player player, LivingEntity livingEntity, RpgItem rpgItem, EntityDamageByEntityEvent event) {
+    public LivingEntityDamageByRpgItemEvent(final Player player, final LivingEntity livingEntity, final RpgItem rpgItem, final EntityDamageByEntityEvent event) {
         this.player = player;
         this.livingEntity = livingEntity;
         this.rpgItem = rpgItem;
@@ -49,7 +49,7 @@ public class LivingEntityDamageByRpgItemEvent extends Event implements Cancellab
     }
 
     @Override
-    public void setCancelled(boolean b) {
+    public void setCancelled(final boolean b) {
         this.cancelled = b;
     }
 

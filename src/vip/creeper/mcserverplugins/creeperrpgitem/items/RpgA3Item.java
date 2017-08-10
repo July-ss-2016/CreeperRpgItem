@@ -28,15 +28,17 @@ import java.util.Arrays;
 public class RpgA3Item implements RpgItem {
     private CreeperRpgItem plugin;
     private ItemStack item;
-    private CooldownCounter potionCooldownCounter = new CooldownCounter(15);
+    private CooldownCounter potionCooldownCounter;
 
     public RpgA3Item(final CreeperRpgItem plugin) {
         this.plugin = plugin;
         this.item = new ItemStack(Material.CLAY_BRICK);
-        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+        this.potionCooldownCounter = new CooldownCounter(15);
+
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§b[RI] §d板砖");
-        meta.setLore(Arrays.asList(new String[] {"§7- §f代码 §b> §f" + getItemCode(), "§7- §e你给我把头伸过来","§7- §eShift+右键查看详细信息"}));
+        meta.setLore(Arrays.asList("§7- §f代码 §b> §f" + getItemCode(), "§7- §e你给我把头伸过来","§7- §eShift+右键查看详细信息"));
+        this.item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
         this.item.setItemMeta(meta);
     }
 
@@ -92,12 +94,13 @@ public class RpgA3Item implements RpgItem {
         }
 
         WarpEffect effect = new WarpEffect(plugin.getEffectManager());
+
         effect.speed = 1.5f;
         effect.particle = ParticleEffect.SMOKE_LARGE;
         effect.setLocation(player.getLocation());
         effect.start();
 
-        player.setNoDamageTicks(100); // 无敌 5s
+        player.setNoDamageTicks(100); //无敌 5s
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
         MsgUtil.sendMsg(player, "感觉自己被打了鸡血!");
         this.potionCooldownCounter.put(playerName);

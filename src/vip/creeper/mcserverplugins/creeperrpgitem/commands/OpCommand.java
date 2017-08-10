@@ -20,7 +20,7 @@ public class OpCommand implements CommandExecutor {
         this.plugin = plugin;
     }
 
-    public boolean onCommand(CommandSender cs, Command cmd, String lable, String[] args) {
+    public boolean onCommand(final CommandSender cs, final Command cmd, final String lable, final String[] args) {
         if (!Util.isAdmin(cs)) {
             MsgUtil.sendMsg(cs, "&c你没有权限.");
             return true;
