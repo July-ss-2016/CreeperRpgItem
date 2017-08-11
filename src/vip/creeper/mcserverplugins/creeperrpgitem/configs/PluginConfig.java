@@ -1,5 +1,6 @@
 package vip.creeper.mcserverplugins.creeperrpgitem.configs;
 
+import org.bukkit.configuration.file.FileConfiguration;
 import vip.creeper.mcserverplugins.creeperrpgitem.Config;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.Settings;
@@ -17,8 +18,11 @@ public class PluginConfig implements Config {
     }
 
     public void loadConfig() {
+        FileConfiguration config = plugin.getConfig();
         plugin.saveDefaultConfig();
         plugin.reloadConfig();
-        settings.setNoRpgItemWorlds(plugin.getConfig().getStringList("no_rpgitem_worlds"));
+
+        settings.setNoRpgItemWorlds(config.getStringList("no_rpgitem_worlds"));
+        settings.setNoPvpWorlds(config.getStringList("no_pvp_worlds"));
     }
 }

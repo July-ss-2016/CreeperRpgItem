@@ -17,25 +17,22 @@ public class RpgItemManager {
         this.items = new HashMap<>();
     }
 
+    @SuppressWarnings("unchecked")
     public List<RpgItem> getRpgItems() {
         List<RpgItem> temp = new ArrayList<>();
 
-        Iterator iter = items.entrySet().iterator();
-
-        while (iter.hasNext()) {
-            Map.Entry<String, RpgItem> entry = (Map.Entry) iter.next();
+        for (Object o : items.entrySet()) {
+            Map.Entry<String, RpgItem> entry = (Map.Entry) o;
             temp.add(entry.getValue());
         }
 
         return temp;
     }
 
-    public boolean registerRpgItem(final RpgItem item) {
+    public void registerRpgItem(final RpgItem item) {
         if (!this.items.containsKey(item.getItemCode())) {
             this.items.put(item.getItemCode(), item);
-            return true;
         }
-        return false;
     }
 
     public void unregisterAllRpgItems() {
@@ -74,7 +71,7 @@ public class RpgItemManager {
         return standardMeta.getLore().get(0).equals(comparedMeta.getLore().get(0));
     }
 
-    public String getRpgItemCode(final ItemStack item) {
+    private String getRpgItemCode(final ItemStack item) {
         if (item == null) {
             return null;
         }

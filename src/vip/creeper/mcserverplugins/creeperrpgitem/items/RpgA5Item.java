@@ -107,7 +107,13 @@ public class RpgA5Item implements RpgItem {
         List<Entity> entities = player.getNearbyEntities(5, 5, 5); //得到玩家周围的实体
 
         for (Entity entity : entities) {
-            if (entity instanceof Player || entity instanceof Monster) {
+            if (Util.isNoPvpWorld(player.getWorld().getName())) {
+                if (entity instanceof Player) {
+                   continue;
+                }
+            }
+
+            if (entity instanceof LivingEntity) {
                 LivingEntity livingEntity = (LivingEntity) entity;
                 livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, 2, 160));
                 livingEntity.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_DIGGING, 1,160));

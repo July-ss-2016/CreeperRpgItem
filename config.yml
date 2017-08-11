@@ -2,3 +2,5 @@ no_rpgitem_worlds:
 - world
 - w_market_0
 - w_plot_0
+no_pvp_worlds:
+- w_instance_0

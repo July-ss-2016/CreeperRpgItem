@@ -23,6 +23,8 @@ import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 
 import java.util.Arrays;
 
+import static org.bukkit.event.entity.EntityDamageEvent.*;
+
 /**
  * Created by July_ on 2017/7/23.
  */
@@ -96,23 +98,25 @@ public class RpgA2Item implements RpgItem {
             return;
         }
 
+        if (Util.isNoPvpWorld(player.getWorld().getName()) && target instanceof Player) {
+            event.setCancelled(true);
+            return;
+        }
+
         //判断是否在领地
         if (Util.isCanAttackResidence(playerLoc, playerName)) {
             target.teleport(player.getLocation().add(0, 10, 0));
 
             WarpEffect effect = new WarpEffect(plugin.getEffectManager());
+
             effect.speed = 1.5f;
             effect.particle = ParticleEffect.ENCHANTMENT_TABLE;
             effect.setLocation(playerLoc);
             effect.start();
 
             MsgUtil.sendMsg(player, "上天吧~");
-
-            if (target instanceof  Player) {
-                MsgUtil.sendSkillDamageMsg(target, playerName, "上天");
-            }
-
-            target.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.ENTITY_ATTACK, 15));
+            MsgUtil.sendSkillDamageMsg(target, playerName, "上天");
+            target.setLastDamageCause(new EntityDamageEvent(player, DamageCause.ENTITY_ATTACK, 15));
             this.throwCooldownCounter.put(playerName);
         } else {
             MsgUtil.sendMsg(player, MsgUtil.NO_ATTACK_MSG);

@@ -8,7 +8,9 @@ import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.RpgItem;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.LivingEntityDamageByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractByRpgItemEvent;
+import vip.creeper.mcserverplugins.creeperrpgitem.events.PlayerInteractLivingEntityByRpgItemEvent;
 import vip.creeper.mcserverplugins.creeperrpgitem.utils.MsgUtil;
+import vip.creeper.mcserverplugins.creeperrpgitem.utils.Util;
 
 /**
  * Created by July_ on 2017/7/23.
@@ -40,10 +42,21 @@ public class ServerListener implements Listener {
 
     //世界保护
     @EventHandler
-    public void onPlayerUseRpgItemOnBlackListWorlds(final PlayerInteractByRpgItemEvent event) {
+    public void onPlayerInteractByRpgItemEvent(final PlayerInteractByRpgItemEvent event) {
         Player player = event.getPlayer();
-        if (CreeperRpgItem.getInstance().getSettings().getNoRpgItemWorlds().contains(player.getWorld().getName())) {
-            MsgUtil.sendMsg(player, "§c你不能在这个世界使用该RPG装备!");
+
+        if (Util.isNoRpgItemWorld(player.getWorld().getName())) {
+            MsgUtil.sendMsg(player, "§c你不能在这个世界使用RPG装备!");
+            event.setCancelled(true);
+        }
+    }
+
+    //世界保护
+    @EventHandler
+    public void onPlayerInteractLivingEntityByRpgItemEvent(final PlayerInteractLivingEntityByRpgItemEvent event) {
+        Player player = event.getPlayer();
+
+        if (Util.isNoRpgItemWorld(player.getWorld().getName())) {
             event.setCancelled(true);
         }
     }

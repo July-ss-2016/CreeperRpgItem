@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class Settings {
     private List<String> noRpgItemWorlds;
+    private List<String> noPvpWorlds;
 
     public void setNoRpgItemWorlds(final List<String> worlds) {
         this.noRpgItemWorlds = worlds;
@@ -15,5 +16,13 @@ public class Settings {
 
     public List<String> getNoRpgItemWorlds() {
         return this.noRpgItemWorlds;
+    }
+
+    public void setNoPvpWorlds(final List<String> worlds) {
+        this.noPvpWorlds = worlds;
+    }
+
+    public List<String> getNoPvpWorlds() {
+        return this.noPvpWorlds;
     }
 }

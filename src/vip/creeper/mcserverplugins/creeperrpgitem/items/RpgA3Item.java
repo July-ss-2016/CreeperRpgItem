@@ -100,7 +100,7 @@ public class RpgA3Item implements RpgItem {
         effect.setLocation(player.getLocation());
         effect.start();
 
-        player.setNoDamageTicks(100); //无敌 5s
+        player.setNoDamageTicks(160); //无敌 5s
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 2));
         MsgUtil.sendMsg(player, "感觉自己被打了鸡血!");
         this.potionCooldownCounter.put(playerName);

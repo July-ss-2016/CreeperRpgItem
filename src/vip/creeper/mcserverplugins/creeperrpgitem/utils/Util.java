@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.inventory.ItemStack;
 import vip.creeper.mcserverplugins.creeperrpgitem.CreeperRpgItem;
+import vip.creeper.mcserverplugins.creeperrpgitem.Settings;
 
 import java.io.File;
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Random;
  */
 public class Util {
     private static Random random = new Random();
+    private static Settings settings = CreeperRpgItem.getInstance().getSettings();
 
     public static boolean isPlayer(final CommandSender cs) {
         return (cs instanceof Player);
@@ -64,5 +66,13 @@ public class Util {
 
     public static double getRandomValue() {
         return random.nextDouble();
+    }
+
+    public static boolean isNoPvpWorld(String worldName) {
+        return settings.getNoPvpWorlds().contains(worldName);
+    }
+
+    public static boolean isNoRpgItemWorld(String worldName) {
+        return settings.getNoRpgItemWorlds().contains(worldName);
     }
 }
